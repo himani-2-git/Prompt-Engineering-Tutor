@@ -1,0 +1,1686 @@
+✓ ✗
+ 1
+2
+Prompt Engineering
+ October 10, 2025
+ii
+Contents
+ 1 IntroductiontoPromptEngineeringandLLMs 1
+ 1.1 EvolutionofNLPtoLargeLanguageModels . . . . . . . . . . . . . . . . . . . . 1
+ 1.1.1 Rule-BasedSystems . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 2
+ 1.1.2 StatisticalLanguageModels . . . . . . . . . . . . . . . . . . . . . . . . . . 3
+ 1.1.3 NeuralLanguageModels. . . . . . . . . . . . . . . . . . . . . . . . . . . . 5
+ 1.1.4 PretrainedLanguageModels(PLMs). . . . . . . . . . . . . . . . . . . . . 7
+ 1.1.5 LargeLanguageModels(LLMs) . . . . . . . . . . . . . . . . . . . . . . . 7
+ 1.2 AnatomyofLLMs:Tokens,embeddings,contextwindows . . . . . . . . . . . . . 7
+ 1.2.1 Tokens. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 8
+ 1.2.2 Embeddings . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 8
+ 1.2.3 ContextWindows . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 8
+ 1.2.4 PositionalEncoding . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 9
+ 1.2.5 AttentionMechanism . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 9
+ 1.2.6 TokenLimitsandWorkflow . . . . . . . . . . . . . . . . . . . . . . . . . . 9
+ 1.2.7 VisualDiagram. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 9
+ 1.3 WhyPromptEngineeringMatters . . . . . . . . . . . . . . . . . . . . . . . . . . 10
+ 1.4 ApplicationsinAIandMachineLearning . . . . . . . . . . . . . . . . . . . . . . 11
+ 1.5 IntroductiontoGPT,Claude,PaLM,Mistral . . . . . . . . . . . . . . . . . . . . 12
+ 1.5.1 GPT(GenerativePre-trainedTransformer)–OpenAI . . . . . . . . . . . 12
+ 1.5.2 Claude–Anthropic . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 12
+ 1.5.3 PaLM(PathwaysLanguageModel)–Google/DeepMind . . . . . . . . 13
+ 1.5.4 Mistral–MistralAI . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 13
+ 1.6 Promptingvsfine-tuning . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 13
+ 1.7 Fine-Tuning . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 13
+ 1.8 Prompting. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 14
+ 1.8.1 Fine-TuningvsPrompting–Comparison . . . . . . . . . . . . . . . . . . 15
+ 2 FoundationsofPromptDesign 17
+ 2.1 Typesofprompting:Zero-shot,One-shot,Few-shot. . . . . . . . . . . . . . . . . 17
+ 2.1.1 What isShot-BasedPrompting? . . . . . . . . . . . . . . . . . . . . . . . 17
+ 2.1.2 Zero-ShotPrompting. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 18
+ 2.1.3 One-ShotPrompting . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 18
+ 2.1.4 Few-ShotPrompting . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 18
+ 2.1.5 HowtoChoosetheRightPromptingTechnique. . . . . . . . . . . . . . . 19
+ 2.2 PromptPatternsOverview . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 19
+ 2.2.1 InstructionalPromptPattern . . . . . . . . . . . . . . . . . . . . . . . . . 19
+ 2.2.2 DelimitingPromptPattern . . . . . . . . . . . . . . . . . . . . . . . . . . 20
+ 2.2.3 Role-BasedPromptPattern . . . . . . . . . . . . . . . . . . . . . . . . . . 20
+ 2.2.4 SocraticPromptPattern. . . . . . . . . . . . . . . . . . . . . . . . . . . . 21
+ 2.3 Promptevaluationmetrics: accuracy,relevance,hallucination,safety . . . . . . . 21
+ 2.3.1 Relevance . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 22
+ iii
+iv CONTENTS
+ 2.3.2 Hallucination. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 23
+ 2.4 Safety . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 23
+ 2.5 Promptdebuggingtechniques . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 24
+ 3 AdvancedPromptingTechniques 29
+ 3.0.1 ChainofThoughtPrompting . . . . . . . . . . . . . . . . . . . . . . . . . 29
+ 3.0.2 Self-AskPrompting . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 30
+ 3.0.3 SelfAskPrompt . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 32
+ 3.0.4 Multimodalprompting(text+image) . . . . . . . . . . . . . . . . . . . . 34
+ 3.1 PrompttemplatesusingPythonAPIs(LangChain,OpenAISDK). . . . . . . . . 36
+ 3.1.1 ComponentsofLangChain . . . . . . . . . . . . . . . . . . . . . . . . . . 36
+ 3.2 PromptTemplatesinLangChain . . . . . . . . . . . . . . . . . . . . . . . . . . . 37
+ 3.2.1 2.ChatPromptTemplates . . . . . . . . . . . . . . . . . . . . . . . . . . . 38
+ 3.2.2 ExampleOutput. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 38
+ 3.3 PromptTemplates+OpenAISDKExamples . . . . . . . . . . . . . . . . . . . . 38
+ 3.3.1 1. StringPromptTemplate+OpenAIChatAPI . . . . . . . . . . . . . . 39
+ 3.3.2 2.Chat-StylePromptTemplate+OpenAIChatAPI . . . . . . . . . . . 40
+ 4 PromptEngineeringforDomain-SpecificTasks 41
+ 4.1 CodingAssistantFeatureswithExamples . . . . . . . . . . . . . . . . . . . . . . 41
+List of Figures
+ 1.1 Flowchart of the Transformer-based Text Processing in a Language Model . . . . 10
+ 2.1 Types of Prompts . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 17
+ 3.1 Illustration of LangChain components and features. . . . . . . . . . . . . . . . . . 36
+ v
+vi
+ LIST OF FIGURES
+ListofTables
+ 1.1 ComparisonBetweenPretrainedLanguageModels(PLMs)andLargeLanguage
+ Models(LLMs) . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 7
+ 1.2 ComparisonBetweenFine-TuningandPromptinginLargeLanguageModels . . 15
+ 2.1 ComparisonofPromptPatternTypesandTheirCharacteristics . . . . . . . . . 22
+ 2.2 PromptEvaluationCriteria:Definitions,Considerations,andExamples . . . . . 24
+ vii
+viii
+ LIST OF TABLES
+1
+ Introduction to Prompt Engineering
+ and LLMs
+ This chapter delves into the transformation of Natural Language Processing (NLP) from its
+ early foundations in rule-based systems and statistical methods to the cutting-edge era of Large
+ Language Models (LLMs) that drive today’s AI-powered applications. It begins by tracing the
+ historical journey—highlighting the limitations of traditional approaches, the breakthroughs
+ introduced by neural network architectures, and the revolutionary impact of the Transformer
+ model that enabled large-scale, context-aware language understanding.
+ Building on this foundation, the chapter examines the anatomy of LLMs, focusing on three
+ essential components: tokens, the basic units into which text is segmented; embeddings, the
+ dense vector representations that encode semantic meaning; and context windows, which define
+ how much information the model can consider at once, directly influencing its ability to handle
+ complex reasoning and maintain coherent narratives.
+ A significant portion of the discussion centers on prompt engineering—the practice of craft
+ing precise and purposeful instructions to elicit optimal responses from LLMs. The chapter
+ explains why prompt engineering has become a critical skill, how it can adapt model behavior
+ without retraining, and the range of applications it enables, from intelligent assistants and code
+ generation to automated summarization and domain-specific content creation.
+ The chapter also introduces some of the most influential LLMs in the current AI land
+scape—OpenAI’s GPT series, Anthropic’s Claude, Google’s PaLM, and Mistral—offering a
+ high-level comparison of their capabilities, architectures, and intended use cases. Finally, it
+ explores the strategic choice between prompting and fine-tuning as methods for customizing
+ model behavior, weighing the trade-offs in terms of adaptability, resource requirements, and
+ performance in specialized tasks.
+ By the end of this chapter, the reader will have a comprehensive understanding of how LLMs
+ evolved from earlier NLP systems, how their core mechanisms operate, why prompt engineering
+ is central to leveraging their power, and how different adaptation strategies can be applied
+ effectively in AI/ML projects.
+ 1.1 Evolution of NLP to Large Language Models
+ Large Language Models (LLMs) are advanced artificial intelligence systems designed to under
+stand, process, and generate human language with remarkable fluency and contextual aware
+ness. Built on deep learning architectures most notably the Transformer they are trained on
+ vast datasets comprising books, articles, websites, and other text sources, enabling them to
+ learn grammar, facts, reasoning patterns, and even stylistic nuances.
+ An LLM’s capability stems from billions (or even trillions) of parameters that encode pat
+terns and relationships within language. These models work by predicting the next word (or
+ 1
+2
+ 1. INTRODUCTION TO PROMPT ENGINEERING AND LLMS
+ token) in a sequence based on the context provided, allowing them to perform a wide variety
+ of tasks without explicit task-specific programming. Such tasks include answering questions,
+ summarizing documents, translating languages, generating code, creating conversational agents,
+ and assisting in research.
+ Unlike earlier NLP models, LLMs are not confined to narrow domains or fixed vocabularies.
+ Their flexibility comes from general-purpose training, which allows them to adapt to different
+ prompts and contexts on the fly. This adaptability has opened new possibilities in education,
+ business, creative industries, and scientific research, making LLMs a central technology in the
+ current AI revolution.
+ While LLMs are often discussed in the context of popular implementations like OpenAI’s
+ GPT series, Anthropic’s Claude, Google’s PaLM, or Mistral’s open-source models, the concept
+ itself is broader it represents a leap from specialized linguistic tools to versatile, knowledge-rich
+ systems capable of interacting with humans in natural and meaningful ways.
+ Having understood what LLMs are in general, we will now explore how they came to
+ be—tracing the historical evolution of language processing technologies and the breakthroughs
+ that enabled the development of modern LLMs.
+ 1.1.1 Rule-Based Systems
+ Before machine learning became the driving force behind natural language processing, early
+ conversational programs were essentially collections of rules and patterns coded by humans.
+ These systems operated with fixed behavior: if certain words or structures appeared in user
+ input, the system would respond in a pre-determined way. One of the earliest and most famous
+ examples is ELIZA (1966), created by Joseph Weizenbaum at MIT. ELIZA’s “DOCTOR” script
+ simulated a Rogerian psychotherapist by turning user statements into questions, giving the
+ illusion of understanding. A few years later, PARRY (1972) was created by psychiatrist Kenneth
+ Colby to simulate a patient with paranoid schizophrenia. These programs were groundbreaking
+ for their time because they showed that computers could appear conversational, even though
+ there was no true comprehension happening.
+ Rule-based systems rely entirely on explicitly programmed rules to determine responses.
+ They operate much like a decision tree:
+ 1. Keyword Matching: The system searches the user’s input for specific words or phrases.
+ For example, if the word “weather” appears, the chatbot might respond with “Would you
+ like to know today’s forecast?”
+ 2. Pattern Matching: Beyond individual keywords, many systems use templates with place
+holders for variable parts of the input. These are often written in a form like "I am feeling
+ *X" where *X can match any word or phrase the user types.
+ 3. Response Templates: Once a match is found, the system selects one of several fixed
+ responses tied to that pattern. Sometimes there are multiple options, chosen randomly to
+ reduce repetition.
+ 4. Pronoun Substitution: To make responses sound more natural, some systems swap pro
+nouns in the input to fit the reply — changing “I” to “you” or “my” to “your.” This made
+ ELIZA seem more conversational even though it was mechanically substituting words.
+ Unlike modern AI systems, these rule-based programs have no ability to learn from experi
+ence. Their “knowledge” is only as broad as the rules the human programmer wrote. If a topic
+ isn’t covered by a rule, the system can’t address it meaningfully. For example, if you ask about
+ “space travel” but no rule matches “space” or “travel,” the chatbot will either produce a generic
+ fallback response like “Tell me more about that” or fail entirely. There is no statistical model
+ing, probability estimation, or pattern generalization — it’s just direct mapping from detected
+1.1. EVOLUTION OF NLP TO LARGE LANGUAGE MODELS
+ 3
+ pattern to canned output. This makes the system predictable but also extremely limited. There
+ was no statistical prediction. If you typed “I am feeling”, the system wouldn’t predict “happy”
+ —it would search for the keyword “feeling” in its script and reply with a fixed sentence like
+ “Why are you feeling that way?” It’s deterministic, not probabilistic. Example: User: “I am
+ feeling very” System: (searches for “feeling”) → “Why are you feeling that way?”
+ 1.1.2 Statistical Language Models
+ After the era of rule-based systems, the next big step in natural language modeling came with
+ statistical methods. Instead of hardcoding patterns, researchers began learning patterns from
+ large text corpora by counting how often sequences of words occurred. This was the foundation
+ of statistical language modeling and was widely used in:
+ 1. Early speech recognition (e.g., Dragon NaturallySpeaking, early Google Voice Search)
+ 2. Machine translation (e.g., early Google Translate)
+ 3. Text prediction (e.g., T9 keyboards, early phone autocorrect)
+ 4. Information retrieval (search engines estimating query likelihood)
+ This period represented the shift from handwritten logic to data-driven probability models.
+ A Statistical Language Model (SLM) is a probability distribution over sequences of words.
+ It helps us estimate how likely a particular sentence is in a language.
+ In simple terms:
+ 1. It answers “How likely is this sentence to occur in real language?”
+ 2. It is widely used in speech recognition, machine translation, text generation, spelling
+ correction, autocomplete, and chatbots.
+ The basic idea is For a sequence of words W = (w1,w2,...,wn):
+ P(W) =P(w1,w2,...,wn)
+ Using the chain rule of probability:
+ P(W) =P(w1)×P(w2|w1)×P(w3|w1,w2)×···×P(wn|w1,...,wn−1)
+ Since exact computation is difficult, approximations such as n-gram models are used.
+ Types of SLM
+ Depend on how much previous words the next word is predicted there are types of n-gram
+ models.
+ 1. Unigram Model:- Assumes each word is independent.
+ n
+ P(w1,w2,...,wn) =
+ i=1
+ Example: Corpus: “I like apples. I like bananas.”
+ Counts:
+ P(wi)
+ P(I) = 2
+ 6 = 0.33, P(like) = 2
+ 6 = 0.33, P(apples) = 1
+ 6 = 0.17
+ Sentence: “I like apples”
+ P =0.33×0.33×0.17 = 0.018
+4
+ 1. INTRODUCTION TO PROMPT ENGINEERING AND LLMS
+ 2. Bigram Model:- Each word depends on the previous word.
+ n
+ P(w1,...,wn) = P(w1)×
+ Example: From corpus:
+ i=2
+ P(wi|wi−1)
+ P(like|I) = 2
+ 2 = 1.0, P(apples|like) = 1
+ 2 = 0.5
+ Sentence: “I like apples”
+ Source–Channel Models
+ P =0.33×1.0×0.5 = 0.165
+ These models treat language generation as a noisy communication process: a source produces a
+ sentence W with probability P(W) and a channel transmits it with probability P(A|W) given
+ an observation A.
+ Example: In Automatic Speech Recognition (ASR), given acoustic signal A, the model selects
+ the word sequence W∗ = argmaxW P(W)·P(A|W).
+ Generative Models
+ Generative models attempt to simulate the process of sentence generation and capture long
+distance dependencies.
+ • Higher-order n-grams: Extend beyond trigram, but require massive data.
+ • Skipping models: Predict words while skipping function words.
+ Example: Predicting “apples” based on “I” and “like”, ignoring intervening function
+ words.
+ • Grammar-based models: Extend P(W) to P(W,T), where T is a parse tree. Example:
+ Subject–verb agreement across clauses is better captured.
+ • Dependency-based models: Use word-to-word dependencies instead of full trees. Ex
+ample: “eat → apples” helps predict the object of the verb.
+ Discriminative Models
+ Discriminative models focus on ranking or classifying candidate sequences directly, instead of
+ modeling the full distribution. They often use linear or maximum-entropy models with features.
+ Example: In ASR, the model ranks candidate outputs like “I like apples” vs. “Eye like apples”
+ by using both acoustic and linguistic features.
+ Grammar-based Hybrid Models
+ These combine n-gram models with syntactic grammars such as Stochastic Context-Free Gram
+mars (SCFG).
+ Example: A trigram captures local context, while SCFG ensures long-distance constraints like
+ subject–verb agreement.
+1.1. EVOLUTION OF NLP TO LARGE LANGUAGE MODELS
+ 5
+ Application-specific Models
+ Specialized variants of SLMs are tailored for particular tasks.
+ • Cross-lingual SLM: Uses lexical triggers or latent semantic indexing to transfer knowl
+edge from a resource-rich language (e.g., English) to a low-resource one.
+ • Spoken Document Retrieval Models: Use both word- and syllable-level models for
+ languages like Mandarin.
+ • Summarization Models: Treat summarization as sentence compression.
+ Example: “I really like to eat apples.” → “I like apples.”
+ In the early 1970s, the field of artificial intelligence saw the introduction of the Hidden
+ Markov Model (HMM) by Leonard E. Baum (1971) et al., and Conditional Random Fields
+ (CRFs).
+ HMMs use probabilities to figure out what’s happening in a sentence, like identifying the
+ role of a word (noun, verb, etc.). They’re really good at handling sequences of words and finding
+ the most likely story behind a sentence, making them useful for tasks like speech recognition
+ and part-of-speech tagging.
+ 1.1.3 Neural Language Models
+ The evolution of neural network architectures has played a pivotal role in shaping the field
+ of natural language processing (NLP). These developments, from the Perceptron to modern
+ recurrent architectures, have expanded the ability of machines to process and understand human
+ language.
+ Convolutional Neural Networks (CNNs)
+ In the 1990s, Convolutional Neural Networks (CNNs) were introduced. While CNNs
+ are primarily associated with image processing, they have also been applied to NLP tasks
+ such as text classification, sentence modeling, and feature extraction from word sequences. By
+ applying convolutional filters over word embeddings, CNNs can capture local features and n
+gram patterns in text.
+ Example: In sentiment analysis, a CNN could detect phrases like “very good” or “not
+ happy” to determine the sentiment of a review.
+ Recurrent Neural Networks (RNNs)
+ Introduced in 1986, Recurrent Neural Networks (RNNs) are designed to handle sequential
+ data. RNNs can capture short-term dependencies by passing information from one time step to
+6
+ 1. INTRODUCTION TO PROMPT ENGINEERING AND LLMS
+ the next. However, they struggle with long-range dependencies due to the vanishing gradient
+ problem.
+ Next-Word Prediction Example Suppose the input sequence is:
+ x =[The, cat, is, on, the]
+ An RNN predicts the next word based on the previous context. Potential predictions:
+ • “mat” (most likely)
+ • “roof” (less likely)
+ • “table” (possible)
+ Recurrent Neural Network Language Model (RNNLM)
+ In 1991, Elman developed the RNN Language Model (RNNLM), which excels at modeling
+ short-term word relationships within sequences but struggles with long-range dependencies.
+ Latent Semantic Analysis (LSA)
+ Introduced by Landauer and Dumais in 1997, Latent Semantic Analysis (LSA) represents
+ words and documents in a high-dimensional semantic space. LSA captures conceptual similar
+ities between words and documents.
+ Example: LSA might identify that “car” and “automobile” are semantically related even
+ if they rarely appear together.
+ Long Short-Term Memory (LSTM) Networks
+ A major breakthrough came in 1997 with Long Short-Term Memory (LSTM) networks.
+ LSTMs use gates (input, forget, output) to regulate information flow, allowing them to capture
+ long-term dependencies.
+ Next-Word Prediction Example Input sequence:
+ x =[The, weather, today, is, very]
+ LSTM prediction probabilities:
+ • “sunny” (high probability)
+ • “cold” (medium probability)
+ • “happy” (low probability)
+ Gated Recurrent Units (GRUs)
+ In 2014, Gated Recurrent Units (GRUs) were proposed as a simplified alternative to
+ LSTMs. GRUs use fewer parameters but maintain strong performance in capturing sequen
+tial patterns.
+ Next-Word Prediction Example Input sequence:
+ x =[Artificial, intelligence, is, transforming]
+ GRU prediction probabilities:
+ • “technology” (most probable)
+ • “education” (less probable)
+ • “healthcare” (less probable)
+1.2. ANATOMY OF LLMS: TOKENS, EMBEDDINGS, CONTEXT WINDOWS
+ 7
+ 1.1.4 Pretrained Language Models (PLMs)
+ Pretrained Language Models (PLMs) are models trained on massive text corpora in a self
+supervised fashion. They capture linguistic features such as syntax, semantics, and context.
+ Once pretrained, these models can be fine-tuned on specific downstream tasks (e.g., machine
+ translation, summarization, sentiment analysis).
+ Examples: Word2Vec, GloVe, ELMo, BERT, GPT (early versions).
+ *Illustrative Example Given the sentence:
+ The student is reading a ___
+ A PLM predicts possible next words such as “book”, “paper”, or “novel”. During fine-tuning,
+ if the model is trained for a medical domain, it might predict “journal” or “article” with higher
+ probability.
+ 1.1.5 Large Language Models (LLMs)
+ Large Language Models (LLMs) are an extension of PLMs with billions or trillions of parameters.
+ Their scale enables them to generalize across a wide range of tasks without explicit task-specific
+ f
+ ine-tuning. Instead, they can perform zero-shot, one-shot, or few-shot learning simply by
+ conditioning on prompts.
+ Examples: GPT-3, GPT-4, PaLM, LLaMA, Claude.
+ *Illustrative Example Given the prompt:
+ Translate: “How are you?” to French.
+ An LLM responds directly with “Comment ça va ?” without requiring task-specific retraining.
+ Comparison Between PLMs and LLMs
+ Table 1.1: Comparison Between Pretrained Language Models (PLMs) and Large Language
+ Models (LLMs)
+ Aspect
+ Pretrained Language Models (PLMs) Large Language Models (LLMs)
+ Training Objective Pretraining + Fine-tuning
+ Pretraining, often used directly
+ Scale
+ Millions to billions of parameters
+ Adaptability
+ Billions to trillions of parameters
+ Requires fine-tuning for new tasks
+ Can adapt with prompting (zero/few-shot)
+ Examples
+ Capabilities
+ Word2Vec, GloVe, BERT, GPT-2
+ GPT-3, GPT-4, PaLM, LLaMA
+ Strong in specific tasks after fine-tuning
+ General-purpose reasoning, text generation
+ 1.2 Anatomy of LLMs: Tokens, embeddings, context windows
+ Large Language Models (LLMs) like GPT-5 are sophisticated neural networks trained on mas
+sive amounts of text. They understand and generate human language by processing it through
+ multiple stages. The key components of an LLM include:
+ • Tokens: The basic units of text.
+ • Embeddings: Numerical vector representations of tokens.
+ • Context Windows: How much text the model can consider at once.
+ • Positional Encoding: Allows the model to understand the order of tokens.
+8
+ 1. INTRODUCTION TO PROMPT ENGINEERING AND LLMS
+ • Attention Mechanism: Helps the model focus on relevant tokens when predicting the
+ next token.
+ • Token Limits and Workflow: How the model processes inputs and generates outputs.
+ 1.2.1 Tokens
+ Tokens are the smallest units of text that the model processes. They allow LLMs to handle
+ text in a structured way.
+ Types of Tokens:
+ • Words: Complete words like “cat” or “house”.
+ • Subwords: Parts of words, useful for rare or compound words. Example: “un”, “break”,
+ “-able”.
+ • Characters: Individual letters or symbols (less common in modern LLMs).
+ Tokenization Methods:
+ • Byte Pair Encoding (BPE): Merges frequently occurring character sequences.
+ • SentencePiece: Handles multilingual and unknown words efficiently.
+ Example:
+ Text: "ChatGPT is amazing."
+ Tokens: ["Chat", "G", "PT", " is", " amazing", "."]
+ Tokens are crucial because they are the input units for embeddings.
+ 1.2.2 Embeddings
+ Embeddings convert tokens into numerical vectors that the model can process.
+ Characteristics:
+ • Dense vectors of hundreds or thousands of dimensions.
+ • Capture semantic meaning: similar words have similar embeddings.
+ • Learned during training via backpropagation.
+ Example:
+ Token: "cat" → Embedding: [0.12,−0.34,0.87,...,0.45]
+ Token: "dog" → Embedding: [0.15,−0.30,0.89,...,0.41]
+ Embeddings are the foundation for the model’s ability to reason and understand language
+ mathematically.
+ 1.2.3 Context Windows
+ The context window determines the maximum number of tokens a model can process at one
+ time. Modern large language models (LLMs) support context windows of varying sizes, ranging
+ from 8,000 to 32,000 tokens, and in some cases even up to 128,000 tokens. Any tokens beyond
+ this limit are truncated and do not influence the model’s output. The size of the context
+ window is crucial for maintaining coherent conversations and enables the model to perform
+ reasoning over lengthy documents, ensuring that relevant information is preserved within the
+ active context.
+1.2. ANATOMY OF LLMS: TOKENS, EMBEDDINGS, CONTEXT WINDOWS
+ 9
+ 1.2.4 Positional Encoding
+ Neural networks cannot inherently know the order of tokens. Positional encoding solves this.
+ • Adds a unique vector to each token embedding based on its position.
+ • Can be sinusoidal or learned during training.
+ Example: Token embeddings for “I love AI” might be modified as:
+ EI +P1, Elove +P2, EAI+P3
+ This allows the model to distinguish “love AI” from “AI love”.
+ 1.2.5 Attention Mechanism
+ Attention allows the model to focus on relevant tokens in the context window.
+ • Calculates a weighted importance for each token relative to others.
+ • Essential for capturing long-range dependencies in text.
+ Self-Attention Example: For the sentence “The cat sat on the mat,” the model can focus
+ more on “cat” when predicting “sat.”
+ 1.2.6 Token Limits and Workflow
+ Workflow:
+ 1. Text Input: Raw text provided by the user.
+ 2. Tokenization: Split text into tokens.
+ 3. Embedding: Convert tokens to vectors.
+ 4. Add Positional Encoding: Incorporate token order.
+ 5. Attention Layers: Compute relevance across all tokens.
+ 6. Feed-Forward Layers: Transform embeddings further.
+ 7. Output Token Prediction: Generate the next token or sequence.
+ Token Limit Considerations:
+ • Tokens beyond the context window are ignored.
+ • Very long documents may need summarization or splitting into chunks.
+ 1.2.7 Visual Diagram
+ LLMs work by transforming text into tokens, embedding those tokens into numerical vectors,
+ understanding their positions, applying attention to relevant parts of the context, and generating
+ outputs. Every component—tokens, embeddings, context windows, positional encoding, and
+ attention—plays a crucial role in making modern language models capable of understanding
+ and generating coherent human language.
+10
+ 1. INTRODUCTION TO PROMPT ENGINEERING AND LLMS
+ Text Input
+ Tokenization
+ Embedding
+ Add Positional Encoding
+ Attention Mechanism
+ Feed-Forward Layers
+ Output Tokens/Text
+ Figure 1.1: Flowchart of the Transformer-based Text Processing in a Language Model
+ 1.3 Why Prompt Engineering Matters
+ Prompt engineering is the practice of carefully designing the input instructions given to a
+ language model to elicit the most accurate, relevant, and useful output. It matters because
+ large language models (LLMs) don’t inherently “know” what you want—they generate responses
+ based on patterns learned from training data, so the way you phrase your question or instruction
+ directly shapes the quality, clarity, and reliability of the model’s response. A well-crafted prompt
+ can dramatically improve performance, helping the model reason logically, follow multi-step
+ instructions, produce contextually appropriate content, and reduce errors or hallucinations,
+ while a poorly worded prompt can lead to vague, irrelevant, or even misleading answers. Prompt
+ engineering is crucial across multiple dimensions
+ 1. Accuracy and Reliability:Clear, specific prompts reduce ambiguity, improving correct
+ness and minimizing hallucinations. Adding context, examples, or explicit instructions
+ guides the model toward desired reasoning paths.
+ 2. Creativity and Style Control:By specifying tone, format, or perspective in the prompt,
+ you can generate outputs that match a particular writing style, audience, or creative
+ requirement.
+ 3. Efficiency and Cost: Optimized prompts can achieve high-quality results with fewer
+ tokens or iterations, saving both time and computational resources.
+ 4. Complex Reasoning and Multi-step Tasks: Breaking tasks into structured prompts,
+ like chain-of-thought or step-by-step instructions, helps models handle intricate reasoning
+ or multi-layered problems more effectively.
+ 5. Context Management: Promptengineering ensures that important information is high
+lighted or prioritized, especially within the limits of a model’s context window, so the
+ model “remembers” relevant details.
+ 6. Safety and Bias Mitigation: Carefully phrased prompts can reduce the likelihood of
+ generating harmful, biased, or inappropriate content by framing questions responsibly and
+ specifying constraints.
+1.4. APPLICATIONS IN AI AND MACHINE LEARNING
+ 11
+ 7. Tool and Domain Integration: In specialized applications like coding, legal research,
+ medical summaries, or data analysis well engineered prompts enable the model to adapt
+ to domain-specific tasks and leverage external tools or datasets more effectively.
+ 8. Scalability and Automation: In business, education, or software, prompt engineering
+ allows consistent outputs across many queries, which is critical for automated systems
+ and reproducible workflows.
+ 1.4 Applications in AI and Machine Learning
+ 1. Natural Language Processing (NLP)
+ 1. Text generation: Articles, summaries, stories, or reports.
+ 2. Translation: Context-aware multilingual translations.
+ 3. Sentiment analysis: Classifying text tone and emotional content.
+ 4. Question answering and chatbots: Extracting accurate responses and maintaining multi
+turn coherence.
+ 2. Code Generation and Software Development
+ 1. Programming assistance: Converting natural language instructions into code.
+ 2. Debugging and optimization: Identifying errors, suggesting improvements, or explaining
+ code.
+ 3. Documentation generation: Creating comments and documentation automatically.
+ 3. Data Science and Analysis
+ 1. Data summarization: Extracting key insights from structured and unstructured data.
+ 2. Exploratory analysis: Identifying patterns, trends, and anomalies.
+ 3. Feature engineering: Suggesting potential features for machine learning models.
+ 4. Knowledge Extraction and Information Retrieval
+ 1. Domain-specific question answering: Extracting structured knowledge in legal, medical,
+ or research contexts.
+ 2. Fact verification: Checking consistency and accuracy of statements.
+ 3. Content filtering: Classifying or flagging biased, harmful, or irrelevant content.
+ 5. Multi-Modal Applications
+ 1. Image and video analysis: Generating captions, scene descriptions, or object recognition.
+ 2. Audio processing: Transcription, summarization, or content analysis.
+12
+ 1. INTRODUCTION TO PROMPT ENGINEERING AND LLMS
+ 6. AI-Assisted Creativity
+ 1. Art and design: Generating images, 3D models, or design concepts.
+ 2. Music composition: Creating melodies, harmonies, and instrumentation.
+ 3. Marketing and copywriting: Crafting targeted ad copy, slogans, and content.
+ 7. Automation and Workflow Optimization
+ 1. Robotic process automation (RPA): Automating repetitive text-based tasks.
+ 2. Decision support: Suggesting actions in business, healthcare, or engineering.
+ 3. Process documentation: Generating standard operating procedures and instructional guides.
+ 8. Research and Education
+ 1. Tutoring and explanations: Teaching concepts or solving problems step-by-step.
+ 2. Simulations and hypothesis testing: Exploring “what-if” scenarios.
+ 3. Knowledge summaries: Condensing scientific literature, technical manuals, or historical
+ texts.
+ 1.5 Introduction to GPT, Claude, PaLM, Mistral
+ 1.5.1
+ GPT (Generative Pre-trained Transformer)– OpenAI
+ The GPT series, developed by OpenAI, is one of the most widely known families of large
+ language models. Its architecture is a decoder-only transformer that uses causal attention
+ to generate text autoregressively. The models are massive in scale, with GPT-3 containing 175
+ billion parameters, GPT-3.5 similar, and GPT-4 estimated at over 170 billion parameters.
+ Training data for GPT-3 comprised approximately 570GB of filtered text, while GPT-4 was
+ trained on a more diverse set of proprietary sources, including text, code, and web data. GPT
+ excels in text generation, summarization, reasoning, coding, and Q&A, with GPT-4
+ providing advanced reasoning and support for very long contexts (up to 128k tokens in some
+ variants). GPT-4 and GPT-4 Turbo also offer multimodal capabilities, handling both
+ text and images, and support over 100 languages, making them highly versatile for global
+ applications. GPT is widely deployed through APIs, ChatGPT, and developer tools like GitHub
+ Copilot.
+ 1.5.2
+ Claude– Anthropic
+ Claude, developed by Anthropic, is a family of language models designed with a strong em
+phasis on alignment and safety. While specific parameter counts are not publicly disclosed,
+ Claude’s architecture is believed to be a decoder-only or hybrid transformer augmented
+ with Constitutional AI techniques to guide safe and helpful responses. Claude models are
+ trained on proprietary datasets, likely a mix of web and curated texts. Their core capabilities fo
+cus on safe conversational AI, multi-turn reasoning, and structured task completion,
+ minimizing harmful or biased outputs. Claude models are primarily text-only and English
+focused, though Claude 2 includes limited support for other languages. The model series
+ includes Claude 1 (Mar 2023), Claude 2 (Jul 2023), and Claude 3 (Mar 2024). They
+ are particularly suited for applications requiring high reliability and safety, such as enterprise
+ chatbots and sensitive information handling.
+1.6. PROMPTING VS FINE-TUNING
+ 13
+ 1.5.3
+ PaLM (Pathways Language Model)– Google / DeepMind
+ PaLM, developed by Google and DeepMind, is a decoder-only transformer that lever
+ages the Pathways architecture, allowing the model to route different tasks to specialized
+ subnetworks efficiently. PaLM 2 contains 540 billion parameters and was trained on multi
+terabyte multilingual datasets, designed to excel in reasoning, coding, translation, and
+ other NLP tasks. Its architecture enables multitask and multilingual learning, with strong
+ performance across over 100 languages. PaLM is text-only, though research versions ex
+plore limited multimodal capabilities. The model is optimized for complex reasoning tasks,
+ translation, summarization, and coding, making it particularly strong for multilingual and
+ enterprise applications. PaLM 2 was publicly announced in May 2023, representing Google’s
+ cutting-edge LLM research.
+ 1.5.4
+ Mistral– Mistral AI
+ Mistral AI has developed models like Mistral 7B and Mixtral, emphasizing efficiency and
+ openness. Mistral 7B is a dense decoder-only transformer with 7 billion parameters, while
+ Mixtral is a Mixture-of-Experts (MoE) model with 12.9 billion effective parameters, acti
+vating only a subset of “experts” per input for computational efficiency. Training data for these
+ models is estimated at around 1 trillion tokens, largely proprietary. Mistral models focus on
+ text generation, reasoning, and research applications, and are text-only. Multilingual
+ support is limited, with most datasets in English. Mistral models are open-weight, allowing
+ researchers to fine-tune them for specific tasks, making them ideal for experimental and com
+mercial deployments. Release timelines include Mistral 7B (Sep 2023) and Mixtral (Oct
+ 2023).
+ 1.6 Prompting vs fine-tuning
+ Large Language Models (LLMs) like GPT, Claude, PaLM, and Mistral can be adapted for
+ specific tasks in two major ways: fine-tuning and prompting. Both approaches have dis
+tinct methodologies, advantages, limitations, and use cases. This document provides a detailed
+ analysis from multiple perspectives.
+ 1.7 Fine-Tuning
+ Definition
+ Fine-tuning is the process of taking a pre-trained language model and further training it on
+ a specific dataset or task so that it performs optimally for that task. Unlike pre-training,
+ which is broad and general-purpose, fine-tuning adapts the model to specialized needs.
+ How It Works
+ 1. Start with a pre-trained model: For example, GPT-4 or PaLM 2.
+ 2. Prepare task-specific data: Could be question-answer pairs, customer support tickets,
+ code snippets, medical notes, or legal documents.
+ 3. Adjust weights via gradient descent: The model’s internal parameters are updated
+ to minimize error on the new dataset.
+ 4. Evaluation and iteration: The fine-tuned model is validated on held-out examples to
+ avoid overfitting and ensure generalization.
+14
+ 1. INTRODUCTION TO PROMPT ENGINEERING AND LLMS
+ Types of Fine-Tuning
+ • Full fine-tuning: All model parameters are updated; requires significant compute.
+ • Parameter-efficient fine-tuning: Only a subset of parameters are trained (e.g., LoRA,
+ adapters, prefix tuning); cheaper and faster.
+ Advantages
+ • Tailors the model to specific domains or tasks.
+ • Improves accuracy for specialized applications.
+ • Enables creation of customized AI assistants.
+ Disadvantages
+ • Computationally expensive for large models.
+ • Requires labeled dataset for the target task.
+ • Can reduce generalization if dataset is too narrow.
+ Example Use Cases
+ • GPT-3 fine-tuned on medical literature to assist doctors.
+ • Customer service chatbot trained on a company’s support tickets.
+ • Coding assistant trained specifically on Python and JavaScript repositories.
+ 1.8 Prompting
+ Definition
+ Prompting is the process of giving a pre-trained language model a carefully designed
+ input (prompt) to elicit the desired behavior or output. Unlike fine-tuning, the model
+ weights are not changed; instead, the model is guided by instructions.
+ Key Features of Prompting
+ • Zero-shot prompting: Ask the model to perform a task without examples.
+ • Few-shot prompting: Provide a few examples in the prompt to guide the model.
+ • Instruction-based prompting: Directly instruct the model (e.g., “Summarize this text
+ in one paragraph”).
+ Advantages
+ • Noadditional training or compute required.
+ • Flexible and fast to adapt to new tasks.
+ • Works with large models out-of-the-box.
+1.8. PROMPTING
+ 15
+ Disadvantages
+ • Performance may be inconsistent for very specialized tasks.
+ • Requires careful trial-and-error to get optimal prompts.
+ • May not match the accuracy of a fine-tuned model in domain-specific tasks.
+ 1.8.1 Fine-Tuning vs Prompting– Comparison
+ Table 1.2: Comparison Between Fine-Tuning and Prompting in Large Language Models
+ Aspect
+ Fine-Tuning
+ Prompting
+ Model Modifica
+tion
+ Model weights are updated for the
+ specific task
+ Data
+ ment
+ Require
+Requires
+ Model weights remain unchanged
+ labeled
+ dataset
+ task-specific
+ No dataset needed; relies on prompt
+ design
+ Compute
+ Performance
+ Expensive, especially for large mod
+els
+ Very low; only inference is required
+ High for specific task/domain
+ Variable; depends on prompt qual
+ity
+ Flexibility
+ Task-specific once fine-tuned
+ Highly flexible; can switch tasks in
+stantly
+ Time
+ Use Cases
+ Takes hours to days to fine-tune
+ Instant (seconds)
+ Specialized applications (medical,
+ legal, coding)
+ General-purpose, experimentation,
+ zero/few-shot tasks
+ • Fine-tuning: Updates model weights to specialize in a task. Offers high accuracy for
+ domain-specific tasks but requires compute and data.
+ • Prompting: Uses pre-trained model as-is, guiding behavior through text instructions.
+ Flexible and quick but less reliable for specialized tasks.
+16
+ 1. INTRODUCTION TO PROMPT ENGINEERING AND LLMS
+2
+ Foundations of Prompt Design
+ When giving AI models instructions, we can improve their performance by providing examples.
+ This technique is called In-Context Learning (ICL). It allows models to learn from examples
+ embedded directly in the prompt, rather than needing additional training or fine-tuning. By
+ including examples, we guide the AI to better understand the task and expected output, lever
+aging its pattern recognition abilities.
+ In-Context Learning is especially useful for tasks where instructions alone may not be
+ enough, or when a certain structure or style is required in the output. Showing examples
+ within the prompt helps the model apply patterns it has learned to similar, unseen inputs.
+ Figure 2.1: Types of Prompts
+ 2.1 Types of prompting: Zero-shot, One-shot, Few-shot
+ 2.1.1 What is Shot-Based Prompting?
+ In-Context Learning (ICL) is closely tied to the concept of shot-based prompting methods,
+ where “shots” refer to the number of examples included in the prompt.
+ Few-shot prompting is a direct application of ICL, where multiple examples (or “shots”)
+ are provided to guide the model’s output. The more examples (or shots) we give, the better
+ the model typically performs, as it can learn from these examples and generalize them to new,
+ similar tasks.
+ 17
+18
+ 2. FOUNDATIONS OF PROMPT DESIGN
+ Common Shot-Based Methods
+ • Zero-Shot Prompting: No examples are provided, and the model must rely entirely on
+ its pre-trained knowledge.
+ • One-Shot Prompting: A single example is given to clarify the task for the model.
+ • Few-Shot Prompting: Two or more examples are included, allowing the model to
+ recognize patterns and deliver more accurate responses.
+ Each of these techniques has strengths depending on the task, and the examples provided
+ help the model learn in context, improving accuracy and output quality.
+ 2.1.2 Zero-Shot Prompting
+ Zero-shot prompting is the simplest form of prompting. Here, we give the model a direct
+ instruction to perform a task without providing any examples or demonstrations. This means
+ the model has to rely entirely on its pre-trained knowledge to figure out how to complete the
+ task.
+ Example of Zero-Shot Prompting
+ Zero-Shot Prompt
+ Classify the sentiment of the following text as positive, negative, or neutral.
+ Text: I think the vacation was okay.
+ Sentiment:
+ AI Output: Neutral
+ While zero-shot prompting can work well for simple tasks, it is often not enough for more
+ complex tasks. The lack of examples leaves the model guessing, and results can be unpredictable.
+ 2.1.3 One-Shot Prompting
+ One-shot prompting enhances zero-shot prompting by providing a single example before the
+ new task, which helps clarify expectations and improves model performance.
+ Example of One-Shot Prompting
+ One-Shot Prompt
+ Classify the sentiment of the following text as positive, negative, or neutral.
+ Text: The product is terrible. Sentiment: Negative
+ Text: I think the vacation was okay. Sentiment:
+ AI Output: Neutral
+ One-shot prompting gives the model a starting point, but with only one example, it might
+ still struggle with nuanced or complex tasks. More examples are often needed for better accu
+racy.
+ 2.1.4 Few-Shot Prompting
+ Few-shot prompting provides two or more examples, which helps the model recognize patterns
+ and handle more complex tasks. With more examples, the model gains a better understanding
+ of the task, leading to improved accuracy and consistency.
+2.2. PROMPT PATTERNS OVERVIEW
+ 19
+ Example of Few-Shot Prompting
+ Few-Shot Prompt
+ Classify the sentiment of the following text as positive, negative, or neutral.
+ Text: The product is terrible. Sentiment: Negative
+ Text: Super helpful, worth it. Sentiment: Positive
+ Text: It doesn’t work! Sentiment:
+ AI Output: Negative
+ Few-shot prompting helps the model generalize from multiple examples, making it more
+ reliable for tasks requiring adherence to specific patterns or formats.
+ 2.1.5 How to Choose the Right Prompting Technique
+ Selecting the appropriate prompting technique—zero-shot, one-shot, or few-shot—depends on
+ the complexity of the task and the level of guidance the model requires.
+ Summary of Use Cases
+ • Zero-Shot Prompting: Use when the task is simple, well-understood, or frequently
+ encountered. Efficient for basic arithmetic, general queries, or common sentiment classi
+f
+ ication.
+ • One-Shot Prompting: Helpful for tasks needing specific guidance or to reduce ambi
+guity. Good for basic classification or structured information extraction.
+ • Few-Shot Prompting: Best for complex tasks requiring multiple examples to establish
+ patterns. Ideal for structured outputs or nuanced classifications.
+ 2.2 Prompt Patterns Overview
+ Prompt patterns are structured methods used to design effective prompts for large language
+ models (LLMs) such as ChatGPT or GPT-5. Each pattern shapes how the AI interprets,
+ reasons, and responds to your input. The four main types discussed here are the Instructional,
+ Delimiting, Role-based, and Socratic patterns. Each has its own working mechanism,
+ strengths, and ideal use cases.
+ 2.2.1 Instructional Prompt Pattern
+ The Instructional prompt pattern is the most direct and commonly used approach for guid
+ing AI. It functions by providing a clear, actionable command such as “summarize,” “explain,”
+ “list,” or “compare.” The AI processes these commands to generate focused outputs that meet
+ the stated objectives. This works effectively because large language models are trained to fol
+low explicit directives. By specifying the audience, tone, and format, users can control how
+ the AI structures its output. The major benefits of this pattern include clarity, precision, and
+ predictability, making it ideal for academic, professional, and creative writing tasks.
+20
+ 2. FOUNDATIONS OF PROMPT DESIGN
+ Examples of Instructional Prompts
+ • Write a 200-word report explaining the effects of deforestation on biodiversity.
+ • Summarize the article in three bullet points using simple language.
+ • List five advantages of electric vehicles over traditional cars.
+ • Explain Newton’s three laws of motion as if you were teaching a child.
+ • Generate a professional cover letter for a job application in marketing.
+ 2.2.2 Delimiting Prompt Pattern
+ The Delimiting prompt pattern improves clarity by using visual or structural boundaries
+ such as triple backticks (““‘), quotation marks, or XML-style tags. These delimiters separate
+ your instructions from the text or data that the AI must analyze, reducing misinterpretation.
+ This technique works because language models read input as a single sequence of text; delimiters
+ act as clear markers that define sections. Its main benefits include precision, structure, and
+ accuracy, especially when working with long passages, data analysis, or text extraction tasks.
+ Examples of Delimiting Prompts
+ • Summarize the following paragraph in one sentence:
+ “‘Artificial intelligence is revolutionizing industries by improving efficiency and
+ reducing human error.“‘
+ • Extract all phone numbers from the text below.–- Contact: 9876543210, Office: 022-3456789–
+• Translate the <text> section into Spanish.
+ <text>Education is the most powerful tool to change the
+ world.</text>
+ • Correct grammar errors in the passage below.
+ """He don’t likes to study because the books is boring."""
+ • Identify all nouns in the following text:–- The cat sat on the warm window sill.–
+2.2.3 Role-Based Prompt Pattern
+ The Role-based prompt pattern assigns a persona or identity to the AI, such as a teacher,
+ doctor, lawyer, or artist. This technique guides the model’s tone, vocabulary, and reasoning
+ style, helping it simulate expertise or creativity appropriate to that role. It works because
+ language models have learned to associate linguistic styles and domain-specific knowledge with
+ various professions during training. Its primary benefits are contextual accuracy, realistic tone,
+ and improved relevance, making it useful for education, professional consulting, storytelling,
+ and simulations.
+2.3. PROMPTEVALUATIONMETRICS:ACCURACY,RELEVANCE,HALLUCINATION,SAFETY21
+ Examples of Role-Based Prompts
+ • You are a nutritionist. Suggest a balanced 7-day meal plan for someone trying to
+ lose weight.
+ • Act as a historian. Explain the causes and effects of the French Revolution.
+ • You are a travel guide. Recommend five unique attractions in Paris for art lovers.
+ • Act as a lawyer. Explain the importance of intellectual property rights to a small
+ business owner.
+ • Youare a poet. Write a short piece describing the feeling of sunrise over the ocean.
+ • Pretend to be a career counselor. Advise a student who is confused about choosing
+ between medicine and engineering.
+ 2.2.4 Socratic Prompt Pattern
+ The Socratic prompt pattern is modeled after the teaching style of the Greek philosopher
+ Socrates, who emphasized learning through guided questioning. In this pattern, the AI engages
+ the user in a reflective dialogue, asking questions that stimulate reasoning rather than giving
+ direct answers. This works by encouraging a back-and-forth process of thought development
+ where each question builds upon the previous response. The benefits of this approach include
+ critical thinking, deeper understanding, and self-discovery. It is best used in contexts such as
+ education, coaching, ethics, and philosophy where exploration and reasoning are more important
+ than factual recall.
+ Examples of Socratic Prompts
+ • Use the Socratic method to help me understand why freedom and responsibility
+ must coexist in a society.
+ • Ask me a series of questions to help me discover why procrastination affects my
+ productivity.
+ • Guide me step-by-step through reasoning why gravity affects all objects equally in
+ a vacuum.
+ • Help me think critically about whether technology improves or harms human cre
+ativity—ask only guiding questions.
+ • Through Socratic questioning, help me figure out what makes a leader truly ethical.
+ • Ask reflective questions to help me explore my career goals and what motivates my
+ decisions.
+ Table 2.1 shows the comparative study of prompt patterns.
+ 2.3 Prompt evaluation metrics: accuracy, relevance, hallucina
+tion, safety
+ Prompt evaluation is the systematic assessment of a prompt’s effectiveness in eliciting the
+ desired output from a language model. Formally, it measures how well a given input P maps
+22
+ 2. FOUNDATIONS OF PROMPT DESIGN
+ Table 2.1: Comparison of Prompt Pattern Types and Their Characteristics
+ Prompt Type
+ How It Works
+ Benefits
+ Instructional
+ Directly commands the
+ AI to perform a specific
+ task such as summariz
+ing, explaining, or list
+ing information.
+ Example Use
+ Produces clear, struc
+tured, and goal-driven
+ responses; provides high
+ control and predictabil
+ity.
+ Writing tasks, summa
+rization, academic ex
+planations, or business
+ reports.
+ Delimiting
+ Uses
+ markers
+ like
+ quotes, triple backticks,
+ or tags to separate
+ input text from the
+ instruction.
+ Prevents
+ confusion,
+ ensures precision with
+ long or complex text,
+ and improves structure.
+ Data extraction, struc
+tured text processing,
+ or long-form content
+ analysis.
+ Role-Based
+ Assigns a persona or
+ professional identity to
+ the AI, shaping tone,
+ vocabulary, and reason
+ing.
+ Adds realism, contex
+tual relevance, and con
+sistent tone; enhances
+ credibility and engage
+ment.
+ Socratic
+ Engages
+ the
+ user
+ through guided ques
+tioning instead of direct
+ answers.
+ Encourages
+ critical
+ thinking, deeper rea
+soning,
+ Teaching, professional
+ consulting, simulations,
+ or creative storytelling.
+ Education,
+ and active
+ learning.
+ coaching,
+ ethics, and reflective
+ discussions.
+ to an output O that satisfies a set of predefined criteria C. These criteria can include accuracy,
+ relevance, coherence, specificity, creativity, safety, and alignment with user intent.
+ 1. Accuracy
+ Accuracy measures the degree to which an AI’s output correctly reflects facts, logic, or the
+ intended knowledge domain. It is critical in ensuring reliability, especially in domains like
+ science, medicine, law, and finance. Accuracy involves precision, completeness, and context
+awareness. For instance, if a prompt asks, “What is the boiling point of water?” a strictly
+ accurate answer is “100°C at 1 atm pressure”. Simply stating “100°C” is partially accurate but
+ lacks context. Ensuring accuracy usually involves verification against trusted sources or domain
+ expertise.
+ Example
+ Prompt: Who developed the theory of relativity?
+ Output (Accurate): Albert Einstein developed the theory of relativity.
+ Output (Inaccurate): Isaac Newton developed the theory of relativity.
+ 2.3.1 Relevance
+ Relevance measures whether the AI’s response directly addresses the user’s intent and provides
+ on-topic information. Even a factually correct answer can be irrelevant if it fails to satisfy the
+ user’s goal. Relevance considers contextual alignment, completeness, focus, and appropriateness.
+ For example, giving a highly technical answer to a question meant for a beginner is less relevant,
+ even if accurate. Relevance evaluation considers the level of detail, clarity, and user intent.
+2.4.
+ SAFETY
+ 23
+ Example
+ Prompt: Explain photosynthesis to a 10-year-old.
+ Output (Relevant): Photosynthesis is the process where plants convert sunlight into
+ energy using chlorophyll, producing oxygen as a byproduct.
+ Output (Less Relevant): Photosynthesis involves converting light energy into chemical
+ energy via photophosphorylation in chloroplasts, regulated by the Calvin cycle and light
+harvesting complexes.
+ 2.3.2
+ Hallucination
+ Hallucination occurs when an AI generates information that is fabricated, misleading, or
+ unsupported by reality, often appearing plausible. Hallucinations can mislead users, especially
+ in knowledge-intensive domains.
+ Types of Hallucinations
+ • Fabricated Facts: Invented information that does not exist.
+ Example: The Nobel Prize in Physics 2023 was awarded to Albert Einstein.
+ • Misattribution: False references, quotes, or attributions.
+ Example: According to a 2021 study in Nature, chocolate cures diabetes.
+ • Contextual Hallucination: Information inconsistent with the prompt context.
+ Example: Prompt: Top programming languages for AI in 2025.
+ Output: COBOL, Fortran, Pascal.
+ • Logical/Reasoning Hallucination: Incorrect conclusions despite some correct facts.
+ Example: All birds can fly; penguins are birds; therefore, penguins can fly.
+ • Temporal Hallucination: Events reported at the wrong time.
+ Example: The 2020 Summer Olympics were held in 2019.
+ Example
+ Prompt: Who won the 2023 Nobel Prize in Literature?
+ Fabricated Fact: J.K. Rowling won the 2023 Nobel Prize in Literature.
+ Safe Response: I don’t have verified information on the 2023 Nobel Prize winner in
+ Literature.
+ 2.4
+ Safety
+ Safety evaluates whether the AI avoids generating content that is harmful, offensive, illegal, or
+ biased. Safety includes physical, psychological, social, ethical, and legal aspects. A prompt may
+ be safe in one context but unsafe in another. Safety also encompasses avoiding bias, discrimi
+nation, or reinforcement of stereotypes. Ensuring safety typically requires prompt constraints,
+ automated filters, and human review.
+24
+ 2. FOUNDATIONS OF PROMPT DESIGN
+ Example
+ Prompt: How can I make a dangerous chemical at home?
+ Safe Response: I’m sorry, I cannot provide instructions for making dangerous sub
+stances, but I can suggest safe chemistry experiments for learning purposes.
+ Unsafe Response: You can mix [chemical A] and [chemical B] to create [dangerous
+ compound].
+ Table 2.2: Prompt Evaluation Criteria: Definitions, Considerations, and Examples
+ Criterion
+ Definition
+ Key Considerations Example
+ Accuracy
+ Correctness of facts or
+ logic
+ Precision,
+ ness, context
+ complete
+Einstein developed rela
+tivity ✓ / Newton ✗
+ Relevance
+ Alignment with user in
+tent
+ On-topic, user-level ap
+propriate
+ Photosynthesis for child
+ ✓ / technical ✗
+ Hallucination Fabricated or mislead
+ing info
+ Fact-checking,
+ (factual,
+ bution,
+ types
+ misattri
+Einstein Nobel 2023 ✗ /
+ No verified info ✓
+ contextual,
+ logical, temporal)
+ Safety
+ Avoids harmful/offen
+sive content
+ Ethical, legal, context
+aware
+ 2.5 Prompt debugging techniques
+ Safe experiments ✓ /
+ dangerous instructions
+ ✗
+ Prompt debugging is the process of refining, testing, and troubleshooting prompts to improve
+ the performance of large language models (LLMs) such as GPT, Claude, and LLaMA. Its goal
+ is to ensure accurate, reliable, and safe outputs from AI systems.
+ Prompt debugging is essential for:
+ 1. Developers and engineers using AI in software.
+ 2. Data scientists implementing AI-based workflows.
+ 3. Educators and researchers teaching or using LLMs.
+ 1. Clarify Your Intent
+ Clarify Your Intent is the practice of providing explicit, unambiguous instructions to an
+ AI model to ensure it understands exactly what you want. Vague prompts often lead to
+ irrelevant, incomplete, or inconsistent outputs because the model tries to interpret your
+ request on its own. By clearly specifying the topic, audience, tone, format, and scope,
+ you guide the AI toward producing more accurate and useful responses.
+ Example
+ Vague prompt: "Tell me about Python."
+ Refined prompt: "Explain Python programming language for beginners in
+ simple terms with examples."
+ 2. Use Step-by-Step Instructions Use Step-by-Step Instructions is a prompt debugging
+ technique where complex tasks are broken down into smaller, sequential steps that the
+2.5. PROMPT DEBUGGING TECHNIQUES
+ 25
+ AI is asked to follow. This method, also known as chain-of-thought prompting, helps the
+ model reason more accurately by handling one sub-task at a time instead of attempting
+ the entire task at once. It reduces reasoning errors, makes the AI’s thought process
+ transparent, and simplifies debugging by allowing you to pinpoint exactly where mistakes
+ occur. For example, instead of asking the AI to solve “27 × 48 ÷ 6 + 15” in a single
+ instruction, you can provide: “Step 1: Multiply 27 × 48. Step 2: Divide the result by
+ 6. Step 3: Add 15. Show each step and the final answer.” This ensures that each step is
+ calculated carefully, resulting in a correct and verifiable output. Step-by-step instructions
+ are valuable not only for calculations but also for coding, summarization, and other multi
+step tasks where precision and clarity are essential.
+ Example
+ Complex prompt: "Solve this math problem: 27 × 48 ÷ 6 + 15"
+ Step-by-step prompt: "Step 1: Multiply 27 × 48. Step 2: Divide the
+ result by 6. Step 3: Add 15. Show each step."
+ 3. Specify the Output Format Specify the Output Format is a crucial prompt debug
+ging technique that involves explicitly telling the AI how you want the response to be
+ structured, displayed, or organized. When the output format is not specified, the AI may
+ produce text that is inconsistent, incomplete, or difficult to use, even if the content is
+ technically correct. By defining the output format, you ensure that the information is
+ clear, structured, and ready for its intended purpose. This can include specifying bullet
+ points, numbered lists, tables, JSON objects, code blocks, or a particular writing style and
+ length. For example, instead of asking “List the top programming languages,” a clearer
+ prompt would be: “List the top 5 programming languages in 2025 as a numbered list,
+ including their name and popularity score.” This instruction reduces ambiguity, improves
+ readability, and ensures that the AI’s response can be easily processed or integrated into
+ other applications. Specifying the output format is particularly important in tasks involv
+ing structured data, technical instructions, or multi-part answers, as it guides the AI to
+ generate content that aligns with your expectations and avoids misinterpretation.
+ Example
+ Ambiguous prompt: "List top programming languages."
+ Specified prompt: "List the top 5 programming languages in 2025 as a
+ numbered list with Name and Popularity Score."
+ 4. Provide Examples (Few-Shot Prompting) Provide Examples (Few-Shot Prompting)
+ is a prompt debugging technique where you include one or more examples of the desired
+ input-output behavior to guide the AI in generating the correct response. This method
+ is especially useful when the task requires a specific style, format, or type of reasoning,
+ as it “teaches” the AI what you expect without modifying the underlying model. By
+ showing examples, you reduce ambiguity and increase consistency, ensuring that the AI
+ understands not only what to do, but how to do it. This approach improves the quality
+ of translations, aligns the AI’s response with the expected format, and reduces errors.
+ Few-shot prompting is broadly applicable, from language translation and summarization
+ to coding and reasoning tasks, and is an essential tool for producing reliable, predictable
+ AI outputs.
+26
+ 2. FOUNDATIONS OF PROMPT DESIGN
+ Example
+ Prompt: "Translate these English sentences to French."
+ Few-shot example:
+ Example 1: "Hello" → "Bonjour"
+ Example 2: "Good morning" → "Bonjour"
+ Now translate: "How are you?"
+ 5. Test Edge Cases Test Edge Cases is a prompt debugging technique that involves delib
+erately providing unusual, extreme, or boundary-case inputs to the AI to evaluate how it
+ handles them. Edge cases help uncover hidden weaknesses, limitations, or potential errors
+ in the AI’s responses that may not appear with standard inputs. By testing these scenar
+ios, you can refine your prompt to handle unexpected situations and improve robustness.
+ Example
+ Standard input: "Calculate 16 ÷ 4"
+ Edge case input: "Calculate the square root of-16"
+ Tip: Include error handling instructions: "If input is invalid, return
+ ’Error: Invalid Input’."
+ 6. Debug Incrementally Debug Incrementally is a prompt debugging technique where
+ you make small, controlled changes to your prompt one at a time and observe how each
+ change affects the AI’s output. This method allows you to isolate which modifications
+ improve the result and which may introduce errors or inconsistencies. By iteratively
+ adjusting and testing, you can systematically refine your prompt for clarity, accuracy, and
+ relevance. Observing the AI’s output after each incremental change helps ensure that
+ the final prompt produces the desired result while minimizing unintended consequences.
+ Debugging incrementally is especially useful for complex or multi-part tasks where a single
+ change can have cascading effects on the response.
+ Example
+ Original: "Summarize this article in 50 words."
+ Add style:
+ tone."
+ Add audience:
+ 10-year-olds."
+ "Summarize this article in 50 words, using a humorous
+ "Summarize this article in 50 words, humorously, for
+ 7. Self-Verification
+ Self-Verification is a prompt debugging technique where you instruct the AI to check or
+ validate its own output before presenting the final answer. This approach helps catch
+ errors, inconsistencies, or reasoning mistakes, especially in tasks that involve calculations,
+ logical reasoning, or multi-step processes. By asking the model to verify its work, you
+ increase the reliability and accuracy of the response. For example, instead of simply asking
+ "Solve 27 × 48 ÷6+15", youcouldprompt: "Solve 27 ×48÷6+15stepbystep, andthen
+ check your final answer for accuracy before presenting it." This encourages the AI to review
+ its own reasoning and reduces the likelihood of errors. Self-verification is particularly
+ valuable for tasks where correctness is critical, such as mathematical computations, coding,
+ data analysis, or generating structured content.
+2.5. PROMPT DEBUGGING TECHNIQUES
+ 27
+ Example
+ Prompt: "Solve the problem step by step and verify the final answer
+ before presenting it."
+ 8. Iterative Prompt Refinement
+ Iterative Prompt Refinement is a prompt debugging technique where you continuously an
+alyze and improve your prompt through multiple iterations. Instead of expecting a perfect
+ response on the first try, you evaluate the AI’s output, identify errors or inconsistencies,
+ and adjust the prompt accordingly. This process is repeated until the output meets your
+ expectations in terms of accuracy, clarity, and format. For example, you might start with
+ a prompt like "Summarize this article in 100 words." After reviewing the AI’s response,
+ you notice it is too technical, so you refine the prompt: "Summarize this article in 100
+ words using simple language for beginners." After another iteration, you may adjust for
+ tone or style, such as "Summarize this article in 100 words using simple, humorous lan
+guage for beginners." Iterative refinement allows you to progressively guide the AI toward
+ producing the desired output while learning which instructions are most effective.
+ Example
+ 1. Run prompt → analyze output.
+ 2. Identify errors (factual, reasoning, format).
+ 3. Adjust instructions, examples, or constraints.
+ 4. Repeat until output is satisfactory.
+ 9. Use Context and Constraints
+ Use Context and Constraints is a prompt debugging technique where you provide the AI
+ with relevant background information (context) and set boundaries or rules (constraints)
+ for the response. Including context ensures that the AI understands the situation, audi
+ence, or subject matter, while constraints help control the length, style, tone, or format
+ of the output. This combination increases accuracy, relevance, and usability. For ex
+ample, instead of asking "Explain Python programming", you could provide context and
+ constraints: "The user is a beginner who has never coded before. Explain Python pro
+gramming in simple terms, using examples, and keep the explanation under 150 words."
+ By giving the model context about the audience and constraints on length and style, you
+ guide it to generate a response that is precise, readable, and tailored to the intended
+ purpose. This technique is especially important for tasks involving structured content,
+ tutorials, or professional communication, where clarity and relevance are critical.
+ Example
+ Context: "The user is a beginner in Python programming."
+ Constraint:
+ jargon."
+ "Explain in less than 100 words, without technical
+ 10. Prompt Chaining Prompt Chaining is a prompt debugging technique where a complex
+ task is broken into a series of smaller, sequential prompts, with the output of one prompt
+ feeding into the next. This method helps manage multi-step or multi-component tasks
+ that might be too difficult or error-prone for a single prompt. By dividing the task into
+ smaller stages, you reduce errors, improve clarity, and make the process more manageable
+ for the AI
+28
+ 2. FOUNDATIONS OF PROMPT DESIGN
+ Example
+ Break complex tasks into multiple steps:
+ 1. Extract facts from text.
+ 2. Summarize facts into key points.
+ 3. Format key points in a table.
+ 11. Sequence Salience Visualization Sequence Salience Visualization is a prompt debug
+ging technique that helps you understand which parts of a prompt or input text the
+ AI model focuses on when generating its response. By visualizing the importance or
+ “salience” of different words, sentences, or sections, you can identify potential misinter
+pretations, biases, or irrelevant attention areas. This insight allows you to refine your
+ prompt for better clarity, relevance, and accuracy. For example, if you provide a long
+ paragraph and the AI consistently emphasizes minor details rather than the main points,
+ salience visualization can reveal this misalignment. You can then adjust your prompt to
+ direct the AI’s attention toward the most important information,
+ Example
+ Visualize which parts of the prompt the AI focuses on to detect biases or misinter
+pretations. Useful for debugging complex prompts over long input texts.
+3
+ Advanced Prompting Techniques
+ advanced prompting techniques” are methods and patterns for crafting better, more con
+trollable, and more consistent outputs from large language models like GPT-5. They go
+ beyond simple instructions (“write an essay about X”) and use structure, roles, examples,
+ and reasoning control to optimize results.
+ 3.0.1 Chain of Thought Prompting
+ Chain-of-thought prompting (CoT) is a prompt engineering technique that enhances the
+ reasoning capabilities of language models by guiding them to reveal their intermediate
+ reasoning steps before providing a final answer. Instead of immediately producing a
+ conclusion, the model is instructed to process the problem step by step, articulating cal
+culations, logic, or sequential thought processes along the way. This approach mirrors
+ human problem-solving, where complex problems are broken down into smaller, man
+ageable steps, and each step is carefully analyzed before arriving at a solution. The
+ main objective of chain-of-thought prompting is to improve the accuracy and reliability of
+ model outputs, particularly for tasks involving multi-step reasoning, mathematics, logical
+ deduction, or coding. By requiring the model to explain its reasoning, CoT reduces the
+ likelihood of hidden assumptions, skipped steps, or erroneous conclusions. It also increases
+ transparency, making it easier for humans to understand, verify, and trust the model’s
+ outputs. Chain-of-thought prompting can be implemented through simple textual cues
+ in the prompt, such as “Let’s think step by step,” “Explain your reasoning before giving
+ the final answer,” or “Show your intermediate steps clearly.” There are two main types of
+ CoT prompting: zero-shot and few-shot.
+ Zero-Shot Chain-of-Thought Example
+ Prompt: If a car travels at 60 km/h for 3 hours, how far does it go? Explain step
+ by step.
+ Model Response:
+ (a) Speed = 60 km/h
+ (b) Time = 3 hours
+ (c) Distance = Speed × Time = 60 × 3 = 180 km
+ Answer: The car travels 180 kilometers.
+ 29
+30
+ 3. ADVANCED PROMPTING TECHNIQUES
+ In zero-shot CoT prompting, the model is not given any prior examples of reasoning;
+ it is simply instructed to produce step-by-step reasoning within the prompt itself. This
+ method works well for simpler tasks or when the model is capable of generating coherent
+ reasoning chains independently. Few-shot chain-of-thought prompting, on the other hand,
+ provides one or more worked examples within the prompt to demonstrate the desired
+ reasoning style. By seeing these examples, the model can imitate the pattern of reasoning
+ when answering new questions, which generally improves performance on more complex
+ or multi-step problems.
+ Few-Shot Chain-of-Thought Example
+ Prompt:
+ • Example 1: Q: If a train travels at 80 km/h for 2 hours, how far does it go?
+ A (step by step): 80 × 2 = 160 km. The train travels 160 km.
+ • Example 2: Q: If a cyclist rides at 25 km/h for 4 hours, how far does he
+ travel?
+ A (step by step): 25 × 4 = 100 km. The cyclist travels 100 km.
+ Model Response:
+ (a) Speed = 50 km/h
+ (b) Time = 5 hours
+ Now you try: Q: If a boat sails at 50 km/h for 5 hours, how far does it go? Explain
+ step by step.
+ (c) Distance = Speed × Time = 50 × 5 = 250 km
+ Answer: The boat travels 250 kilometers.
+ The benefits of chain-of-thought prompting include improved accuracy, transparency, and
+ interpretability of AI outputs. By revealing the reasoning process, it allows errors to be
+ easily identified and corrected, making it particularly useful in educational, analytical,
+ and technical problem-solving applications. However, CoT prompting also has limita
+tions: producing step-by-step outputs can increase response time and computational cost,
+ smaller or less capable models may struggle to maintain coherent reasoning chains, and
+ the reasoning produced may occasionally appear logically sound while containing fac
+tual errors. Despite these challenges, chain-of-thought prompting is a powerful tool for
+ improving the quality, reliability, and trustworthiness of AI-generated responses.
+ 3.0.2 Self-Ask Prompting
+ Self-Ask prompting is a technique used in language models to improve reasoning on complex
+ questions by encouraging the model to decompose a main question into a series of sub-questions,
+ answer each one individually, and then combine the results to reach a final conclusion. Unlike
+ chain-of-thought prompting, which guides the model to reason step by step internally, Self-Ask
+ prompting explicitly separates the reasoning into distinct queries, ensuring that intermediate
+ information is generated and considered before forming the final answer. This method is partic
+ularly useful for multi-hop or multi-step questions where answering the overall problem directly
+ is difficult, as it allows the model to isolate smaller, simpler questions that can be solved in
+dependently. By generating intermediate sub-questions, Self-Ask prompting reduces the risk of
+ missing critical details and improves the transparency of the reasoning process, allowing users
+to see how each component contributes to the final answer.
+ 31
+ Zero-Shot Self-Ask Example
+ Prompt: How many hours of daylight are there in New York City on the summer
+ solstice? Self-ask and answer step by step.
+ Model Response:
+ 1. Sub-question 1: What is the date of the summer solstice?
+ Answer: Around June 21st.
+ 2. Sub-question 2: What is the sunrise time in New York City on June 21?
+ Answer: Approximately 5:25 AM.
+ 3. Sub-question 3: What is the sunset time in New York City on June 21?
+ Answer: Approximately 8:30 PM.
+ 4. Final Calculation: Daylight duration = 8:30 PM- 5:25 AM = 15 hours 5 minutes.
+ Answer: Approximately 15 hours and 5 minutes of daylight.
+ Zero-shot Self-Ask prompting involves instructing the model to generate and answer sub
+questions without providing examples. The model independently decides how to break down
+ the main question into smaller, answerable components, which it then resolves sequentially to
+ produce the final answer. This approach is effective for straightforward or moderately complex
+ tasks where the model can reliably identify relevant sub-questions.
+32
+ 3. ADVANCED PROMPTING TECHNIQUES
+ Few-Shot Self-Ask Example
+ Prompt:
+ • Example 1: Q: Who wrote the book that inspired the movie "Jurassic Park"?
+ A (self-ask):
+ 1. Sub-question 1: What is the title of the book that inspired "Jurassic Park"?
+ Answer: "Jurassic Park".
+ 2. Sub-question 2: Who wrote "Jurassic Park"?
+ Answer: Michael Crichton.
+ 3. Final Answer: Michael Crichton.
+ • Example 2: Q: Which planet in our solar system has the most moons?
+ A (self-ask):
+ Model Response:
+ 1. Sub-question 1: Which planets have moons?
+ Answer: Jupiter, Saturn, Uranus, Neptune, Earth, Mars.
+ 2. Sub-question 2: How many moons does each of these planets have?
+ Answer: Jupiter 79, Saturn 83, Uranus 27, Neptune 14, Earth 1, Mars 2.
+ 3. Final Answer: Saturn has the most moons.
+ Now try: Q: Who is the author of the book that led to the movie "The Hunger Games"?
+ Self-ask and answer step by step.
+ 1. Sub-question 1: What is the book that led to the movie "The Hunger Games"?
+ Answer: "The Hunger Games".
+ 2. Sub-question 2: Who wrote "The Hunger Games"?
+ Answer: Suzanne Collins.
+ 3. Final Answer: Suzanne Collins.
+ Self-Ask prompting offers several benefits: it improves accuracy for multi-hop questions,
+ increases transparency by showing the chain of sub-questions, and allows for easier verification
+ of each reasoning step. It is particularly helpful in domains where questions are complex or
+ require external knowledge, as the intermediate sub-questions guide the model to isolate and
+ solve each piece systematically. Limitations include increased response length and processing
+ time, and the potential for the model to generate irrelevant or redundant sub-questions if not
+ guided properly. Overall, Self-Ask prompting provides a structured framework for decomposing
+ complex questions into answerable units, improving both the reliability and interpretability of
+ model responses.
+ 3.0.3 Self Ask Prompt
+ ReAct prompting, short for Reason + Act prompting, is a strategy used to improve the decision
+making and reasoning capabilities of language models by combining two steps: reasoning about
+ a problem and taking explicit actions based on that reasoning. In this approach, the model
+ alternates between generating internal reasoning steps and performing actions such as retrieving
+ information, making calculations, querying databases, or interacting with external tools. By
+ explicitly structuring the process into reasoning and acting phases, ReAct prompting enables
+ the model to handle complex, dynamic tasks that require both thought and action, rather than
+33
+ relying solely on internal reasoning or pre-trained knowledge. This method is especially effective
+ for tasks that require iterative problem solving, multi-step decision-making, or interactions with
+ external environments. ReAct prompting also increases transparency, as each reasoning step and
+ corresponding action is visible, allowing users to understand how intermediate results influence
+ subsequent actions and final answers.
+ Zero-Shot ReAct Example
+ Prompt: You are a reasoning assistant. Find the current population of New York City.
+ Reason step by step and act if necessary.
+ Model Response:
+ 1. Reasoning Step 1: I need to determine the latest population of New York City.
+ 2. Action 1: Check the latest census or demographic data source.
+ 3. Result: According to the most recent estimate, the population is approximately 8.5
+ million.
+ Answer: The current population of New York City is approximately 8.5 million.
+ Zero-shot ReAct prompting instructs the model to alternate between reasoning and acting
+ without providing examples. The model independently determines which reasoning steps to
+ take and what actions to perform. This approach is useful for straightforward tasks where the
+ reasoning and action steps are relatively intuitive.
+ Few-Shot ReAct Example
+ Prompt:
+ • Example 1: Q: What is the current temperature in London?
+ A (ReAct):
+ 1. Reasoning Step 1: I need the current weather data for London.
+ 2. Action 1: Access a live weather API or dataset.
+ 3. Result: The current temperature in London is 18°C.
+ • Example 2: Q: How many people live in Paris?
+ A (ReAct):
+ Model Response:
+ 1. Reasoning Step 1: I need the latest population figure for Paris.
+ 2. Action 1: Check the most recent census or demographic report.
+ 3. Result: Approximately 2.1 million people live in Paris.
+ Now try: Q: What is the population of Tokyo? Reason and act step by step.
+ 1. Reasoning Step 1: I need the most recent population data for Tokyo.
+ 2. Action 1: Refer to the latest official demographic sources.
+ 3. Result: The population of Tokyo is approximately 14 million.
+ Answer: Tokyo has approximately 14 million residents.
+34
+ 3. ADVANCED PROMPTING TECHNIQUES
+ ReAct prompting improves accuracy and reliability for tasks that involve multiple steps,
+ external tools, or dynamic information retrieval. By alternating between reasoning and action,
+ it ensures that decisions are grounded in both logical thought and real-world data. This method
+ is particularly valuable in domains such as research assistance, question answering, coding, and
+ interactive AI agents. However, it also increases computational complexity and requires careful
+ management of actions and reasoning steps to avoid redundant or unnecessary operations.
+ Despite these challenges, ReAct prompting is an effective framework for building AI systems
+ that need to integrate reasoning with purposeful action.
+ 3.0.4 Multimodal prompting (text + image)
+ Multimodal prompting is a technique used to guide language models that can process multiple
+ types of input, such as text and images, to generate coherent outputs by integrating information
+ from both modalities. In text + image multimodal prompting, the model is provided with tex
+tual instructions along with images, and it is expected to reason, interpret, or answer questions
+ based on the combined information. This method enables the model to perform tasks that
+ require visual understanding, such as describing images, answering questions about visual con
+tent, analyzing diagrams, or generating captions, while simultaneously considering the textual
+ context. By combining reasoning across modalities, multimodal prompting allows for richer,
+ more informative outputs and supports complex tasks that cannot be solved by text or images
+ alone. It also improves interpretability because users can see how the model integrates visual
+ and textual information to arrive at its response.
+ Simple Multimodal Prompt Example
+ Prompt: Look at the image of a dog playing in the park. Describe what is happening
+ in the image in one sentence.
+ Model Response: A dog is happily running and playing in a grassy park.
+ Zero-Shot Multimodal Example
+ Prompt: Analyze the provided image of a cat sitting on a chair and describe what is
+ happening.
+ Model Response:
+ 1. Reasoning Step 1: Identify the main elements in the image.
+ Result: There is a cat and a chair.
+ 2. Reasoning Step 2: Determine the action of the cat.
+ Result: The cat is sitting on the chair.
+ 3. Reasoning Step 3: Describe the context or additional details.
+ Result: The cat appears relaxed, looking toward the camera.
+ Answer: The image shows a relaxed cat sitting on a chair, looking toward the camera.
+ Zero-shot multimodal prompting involves providing the model with textual instructions and
+ images directly, without examples. The model interprets both modalities simultaneously and
+ produces a coherent response. This method works effectively for straightforward image-based
+ reasoning tasks where the model can extract relevant information independently.
+35
+ Few-Shot Multimodal Example
+ Prompt:
+ • Example 1: Q: Describe the image of a dog playing with a ball.
+ A (step by step):
+ 1. Reasoning Step 1: Identify the objects in the image.
+ Result: Dog and ball.
+ 2. Reasoning Step 2: Identify the action.
+ Result: The dog is chasing and playing with the ball.
+ 3. Reasoning Step 3: Describe context.
+ Result: The dog is outdoors on a grassy field.
+ 4. Final Answer: A dog is playing with a ball on a grassy field.
+ • Example 2: Q: Analyze the diagram showing the water cycle.
+ A (step by step):
+ Model Response:
+ 1. Reasoning Step 1: Identify the components: clouds, rain, rivers, sun.
+ Result: Elements of water cycle.
+ 2. Reasoning Step 2: Identify the process: evaporation, condensation, precipita
+tion.
+ Result: Water cycle explained.
+ 3. Final Answer: The diagram shows the water cycle including evaporation, con
+densation, precipitation, and runoff.
+ Now try: Q: Describe the image of a cat sitting on a chair. Explain step by step.
+ 1. Reasoning Step 1: Identify the main objects.
+ Result: Cat and chair.
+ 2. Reasoning Step 2: Determine the action of the cat.
+ Result: Cat is sitting.
+ 3. Reasoning Step 3: Describe the context.
+ Result: The cat is looking at the camera, appearing relaxed.
+ 4. Final Answer: The image shows a relaxed cat sitting on a chair, looking toward the
+ camera.
+ Multi-modal prompting is particularly valuable in domains such as visual question answer
+ing, image captioning, diagram analysis, and interactive AI systems that require both textual
+ and visual understanding. While it enhances reasoning by integrating multiple modalities, it
+ can also increase computational complexity and requires high-quality input from both text and
+ image sources to achieve accurate results. Overall, text + image multimodal prompting enables
+ models to produce richer, more contextually informed outputs that leverage both visual and
+ textual information effectively.
+36
+ 3. ADVANCED PROMPTING TECHNIQUES
+ 3.1 Prompttemplates using Python APIs (LangChain, OpenAI
+ SDK).
+ LangChain is an open-source framework designed to make it easier to build advanced appli
+cations powered by Large Language Models (LLMs) such as GPT, Claude, or Gemini. It
+ provides a structured and modular way to connect an LLM with external data sources, tools,
+ and logic so that developers can create intelligent systems capable of reasoning, memory, and
+ decision-making. Instead of only sending prompts to a language model, LangChain allows devel
+opers to build complex chains — sequences of actions that combine natural language processing
+ with data retrieval, computation, or API interaction. This makes LangChain especially useful
+ for developing AI chatbots, question-answering systems, knowledge assistants, and
+ autonomous agents that can access and use real-world information. Figure 3.1 shows the
+ componants of LangChain.
+ Figure 3.1: Illustration of LangChain components and features.
+ 3.1.1 Components of LangChain
+ • LLMs (Large Language Models):
+ This is the core engine that processes and generates human-like text. LangChain provides
+ easy integration with various LLM providers such as OpenAI, Anthropic, or Cohere. It
+ standardizes how models are called and allows you to easily switch between them without
+ changing your entire codebase.
+ • Prompts:
+ Prompts are the instructions or input text that guide how the LLM behaves. In LangChain,
+ prompts are handled through Prompt Templates, which allow developers to dynam
+ically insert variables and structure prompts consistently. This helps ensure the model
+ receives clear and contextually rich input every time.
+ • Chains:
+ A“chain” is a sequence of steps that link together multiple components, such as prompts,
+ LLMs, and data sources. For example, one chain might first retrieve data from a database,
+ then summarize it using an LLM, and finally translate the summary. Chains let you
+ combine multiple operations in a logical flow, making your AI applications more complex
+ and powerful.
+ • Memory:
+ Memory gives the LLM the ability to “remember” past interactions or context. Without
+3.2. PROMPT TEMPLATES IN LANGCHAIN
+ 37
+ memory, each response from the LLM is independent. LangChain supports several mem
+ory types, such as short-term (chat history) and long-term (vector-based) memory,
+ enabling your AI systems to have more natural, continuous conversations.
+ • Agents:
+ Agents are intelligent decision-making components that use the LLM to decide what
+ actions to take. An agent can analyze a user’s request, choose the right tool or data
+ source, and then execute the necessary steps. For example, an agent can decide whether
+ to search the web, calculate a result, or query a database depending on the user’s question.
+ • Tools:
+ Tools are external utilities or functions that the agent can use to complete specific tasks.
+ These can include APIs, calculators, databases, search engines, or any other service. For
+ instance, if the user asks for the current weather, the agent can call a weather API tool
+ instead of relying solely on the LLM’s built-in knowledge.
+ • Retrievers and Vector Stores:
+ These components connect the LLM to external knowledge sources. A retriever finds
+ the most relevant information from documents or databases based on the user’s query,
+ while a vector store (like Pinecone, FAISS, or Chroma) stores text data as numerical
+ embeddings for fast similarity search. This approach, called Retrieval-Augmented
+ Generation (RAG), allows the model to access private or updated information beyond
+ its training data.
+ In summary, LangChain acts as a bridge between language models and the real world. It
+ provides the structure needed to combine language understanding, reasoning, data retrieval, and
+ action-taking into one system. By integrating these components—LLMs, prompts, chains, mem
+ory, agents, tools, and retrievers—LangChain allows developers to create intelligent, context
+aware, and task-oriented AI applications that go far beyond simple chatbots.
+ 3.2 Prompt Templates in LangChain
+ Prompt Templates in LangChain help transform user input into structured prompts that
+ guide large language models effectively. They act as dynamic templates, where variables can be
+ inserted into predefined text formats. LangChain provides two main types of prompt templates:
+ String PromptTemplates and ChatPromptTemplates.
+ 1. String PromptTemplates
+ String PromptTemplates are used when you need to format a single text string prompt. You
+ can define placeholders that will be filled dynamically using variables at runtime.
+ from langchain_core.prompts import PromptTemplate
+ prompt_template = PromptTemplate.from_template("Tell me a joke about
+ {topic}")
+ prompt_template.invoke({"topic": "cats"})
+ The above code creates a template that inserts a topic (in this case, "cats") into the text.
+ When invoked, it returns the fully formatted prompt ready to be sent to a language model.
+38
+ 3. ADVANCED PROMPTING TECHNIQUES
+ 3.2.1 2. ChatPromptTemplates
+ ChatPromptTemplates are used for chat-based models (like GPT-style assistants). They allow
+ defining multiple messages (system, user, or assistant) as a conversation structure.
+ from langchain_core.prompts import ChatPromptTemplate
+ prompt_template = ChatPromptTemplate([
+ ("system", "You are a helpful assistant."),
+ ("user", "Tell me a joke about {topic}.")
+ ])
+ prompt_template.invoke({"topic": "cats"})
+ This creates a chat prompt where the system message defines the assistant’s role, and the
+ user message contains a dynamic placeholder for the topic.
+ 3.2.2
+ Example Output
+ When the template is invoked, it returns a formatted structure similar to:
+ ChatPromptValue(
+ messages=[
+ SystemMessage(content="You are a helpful assistant."),
+ HumanMessage(content="Tell me a joke about cats.")
+ ]
+ )
+ This structure is ready to be sent directly to an LLM for response generation. By using
+ prompt templates, LangChain ensures consistency, reusability, and flexibility when designing
+ AI prompts.
+ tcolorbox listings xcolor courier
+ 3.3 Prompt Templates + OpenAI SDK Examples
+ Below are examples that format prompt templates (string and chat) and send them using the
+ OpenAI Python SDK.
+3.3. PROMPT TEMPLATES + OPENAI SDK EXAMPLES
+ 39
+ 3.3.1 1. String PromptTemplate + OpenAI Chat API
+ # Example: format a string template and call OpenAI Chat API
+ # Requires: pip install openai
+ import os
+ import openai
+ # Set your API Key safely (example uses environment variable)
+ # export OPENAI_API_KEY="sk-..."
+ openai.api_key = os.getenv("OPENAI_API_KEY")
+ from string import Template
+ # Simple prompt template using Python’s Template
+ template = Template("Tell me a short, witty joke about ${topic}
+ in one sentence.")
+ prompt = template.substitute(topic="cats")
+ # Send as a chat completion (single user message)
+ response = openai.ChatCompletion.create(
+ model="gpt-4o", # replace with the model you intend to use
+ messages=[
+ {"role": "user", "content": prompt}
+ ],
+ max_tokens=60,
+ temperature=0.7
+ )
+ print(response["choices"][0]["message"]["content"].strip())
+40
+ 3. ADVANCED PROMPTING TECHNIQUES
+ 3.3.2 2. Chat-Style Prompt Template + OpenAI Chat API
+ # Example: build a chat-style prompt (system + user) and call
+ OpenAI Chat API
+ # Requirements: pip install openai
+ import os
+ import openai
+ openai.api_key = os.getenv("OPENAI_API_KEY")
+ # Build chat messages with placeholders
+ system_msg = "You are a helpful assistant that writes witty one-liners."
+ user_template = "Compose a witty one-liner about {subject} and
+ make it friendly."
+ subject = "programming"
+ user_msg = user_template.format(subject=subject)
+ messages = [
+ {"role": "system", "content": system_msg},
+ {"role": "user", "content": user_msg},
+ ]
+ response = openai.ChatCompletion.create(
+ model="gpt-4o", # replace with desired model
+ messages=messages,
+ temperature=0.6,
+ max_tokens=60
+ )
+ print(response["choices"][0]["message"]["content"].strip())
+ Notes
+ • Replace model="gpt-4o" with the current model name your account has access to.
+ • Prefer using environment variables (e.g., OPENAI_API_KEY) rather than hard-coding API
+ keys.
+ • If you prefer LangChain’s PromptTemplate / ChatPromptTemplate objects, you can use
+ those to build the prompt string(s) first and then pass the final formatted strings/messages
+ into the OpenAI SDK calls above.
+4
+ Prompt Engineering for
+ Domain-Specific Tasks
+ Prompt engineering is the process of designing and refining prompts to guide large language
+ models (LLMs) to produce desired outputs. When working on domain-specific tasks, effective
+ prompt engineering ensures that the model generates accurate, relevant, and high-quality results
+ tailored to a particular field (e.g., medicine, law, finance, engineering) A coding assistant is
+ a software tool, program, or AI designed to help developers write, understand, debug, and
+ optimize code more efficiently. It acts like a smart helper for programming tasks.
+ 4.1 Coding Assistant Features with Examples
+ 1. Code Completion & Suggestions
+ Description: Predicts and suggests code as you type to save time and reduce errors.
+ Example Code:
+ for i in
+ Suggested Completion:
+ for i in range(10):
+ print( i )
+ 2. Error Detection & Debugging
+ Description: Detects syntax or logical errors and suggests fixes.
+ Example Code:
+ print(" Hello␣world ’
+ Suggested Fix:
+ print(" Hello␣world")
+ 41
+42
+ 4. PROMPT ENGINEERING FOR DOMAIN-SPECIFIC TASKS
+ 3. Code Explanation & Learning
+ Description: Explains code in plain language to help learners understand.
+ Example Code:
+ [ x∗∗2 for x in range(5) ]
+ Explanation: This creates a list of squares of numbers from 0 to 4 using a list compre
+hension.
+ 4. Refactoring & Optimization
+ Description: Suggests cleaner or faster ways to write code.
+ Example Code:
+ squares = []
+ for i in range(10):
+ squares .append( i∗i )
+ Refactored Code:
+ squares = [ i∗i for i in range(10)]
+ 5. Documentation & Examples
+ Description: Generates documentation and usage examples automatically.
+ Example Code:
+ def add(a, b):
+ return a + b
+ Suggested Documentation:
+ def add(a, b):
+ """
+ Adds two numbers together .
+ Parameters :
+ a (int or float ): First number
+ b (int or float ): Second number
+ Returns :
+ i nt or float : Sum of a and b
+ """
+ return a + b
+4.1. CODING ASSISTANT FEATURES WITH EXAMPLES
+ 43
+ 6. Multi-language Support
+ Description: Supports multiple programming languages and provides code suggestions.
+ Example Code in JavaScript:
+ f or ( let i = 0; i < 5; i++) {
+ console . log ( i );
+ }
+ Explanation: Prints numbers 0 through 4 using a for loop.

@@ -1,0 +1,11 @@
+# Secrets - NEVER commit these
+.streamlit/secrets.toml
+.env
+gemini_api.txt
+*_api.txt
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
