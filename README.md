@@ -2,6 +2,10 @@
 
 A RAG chatbot that answers questions about prompt engineering from course notes. It retrieves relevant passages using local BM25 search and streams answers using an LLM.
 
+**Live Demo:** [https://prompt-engineering-tutor.streamlit.app/](https://prompt-engineering-tutor.streamlit.app/)
+
+![Prompt Engineering Tutor Demo](assets/demo.gif)
+
 ## Features
 
 - Local BM25 retrieval with automatic acronym expansion (e.g. CoT / Chain of Thought).
@@ -41,7 +45,7 @@ Set keys in `.streamlit/secrets.toml` or as environment variables:
 | `GEMINI_API_KEY` | Google Gemini API key |
 | `OPENROUTER_API_KEY` | OpenRouter API key |
 | `CEREBRAS_API_KEY` | Cerebras API key |
-| `LLM_CHAIN` | Provider and model chain (e.g., `groq:llama-3.3-70b-versatile,gemini:gemini-flash-latest`) |
+| `LLM_CHAIN` | Provider and model chain (e.g., `groq:openai/gpt-oss-120b,gemini:gemini-3.5-flash`) |
 | `GLOBAL_HOURLY_LIMIT` | Maximum queries per hour across all sessions (default: 300) |
 
 ## Project Structure

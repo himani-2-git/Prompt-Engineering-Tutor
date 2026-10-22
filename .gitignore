@@ -4,6 +4,10 @@
 gemini_api.txt
 *_api.txt
 
+# Media
+*.mp4
+*.mov
+
 # Python
 __pycache__/
 *.pyc
